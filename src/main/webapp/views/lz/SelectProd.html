@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="/css/layui.css" id="layui">
+<script src="/layui.all.js"></script>
+<div class="layui-fluid">
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <div class="layui-card">
+        <div class="layui-card-header">
+            <span>商品基础资料</span>
+        </div>
+        <div class="layui-card-body">
+            <div class="layui-card-header">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">输入框</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="str" id="strid"   autocomplete="off" class="layui-input"  >
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" id="serchid">搜索</button>
+                    </div>
+                </div>
+            </div>
+          <div class="layui-card-body">
+            <table id="demo_hash" lay-filter="test"></table>
+            <script type="text/html" id="barDemo_hash">
+              <a class="layui-btn layui-btn-xs" lay-event="detail">选择</a>
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="hidden" id="parentobj"/>
+<script>
+  layui.config({
+    base: '/src/js/'
+  }).use(['jquery',  'table',  'form'], function () {
+    var $ = layui.jquery,
+      layer = layui.layer,
+      table = layui.table,
+      form = layui.form;
+
+    //第一个实例
+    table.render({
+      method: 'post',
+      // size: 'sm',
+      limit: 20,
+      elem: '#demo_hash',
+      height: 'full-235',
+      url: '/getProd', //数据接口
+      cols: [
+        [ //表头
+           {
+            field: 'prodno',
+            title: '商品编号',
+            width: 150
+          }, {
+            field: 'prodname',
+            title: '商品名',
+            width: 180,
+            sort: true
+         }, {
+            field: 'prodspecification',
+            title: '商品规格',
+            width: 180,
+            sort: true
+        },{
+            field: 'packageunit',
+            title: '包装单位',
+            width: 100,
+            sort: true
+        }, {
+            field: 'manufacture',
+            title: '生产厂家',
+            width: 180,
+            sort: true
+        }, {
+            field: 'approvalno',
+            title: '批准文号',
+            width: 180,
+            sort: true
+        }, {
+            field: 'sterilization',
+            title: '灭菌方式',
+            width: 180,
+            sort: true
+        }, {
+            field: 'note',
+            title: '备注',
+            width: 180,
+            sort: true
+        },{
+            fixed: 'right',
+            title: '操作',
+            width: 80,
+            align: 'center',
+            toolbar: '#barDemo_hash'
+          }
+        ]
+      ]
+    });
+
+
+      //监听单元格编辑
+      table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+          var data = obj.data; //获得当前行数据
+          var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+          if (layEvent === 'detail') {
+              var index = parent.layer.getFrameIndex(window.name);
+              var datas = [data.prodno,data.prodname,data.prodspecification,data.packageunit,data.manufacture,data.approvalno,data.sterilization];
+              var parentobj = $('#parentobj').val();
+              parent.GetProdValue(parentobj,datas);
+              parent.layer.close(index);
+          }
+      });
+
+      $("#serchid").click(function () {
+          var a =  $("#strid").val().trim().toUpperCase();
+          table.reload('demo_hash', {
+              url: '/getProd'
+              ,where: {prodno : a }
+          });
+      });
+      document.onkeydown = function (e) {
+          e = e ? e : event;// 兼容FF
+          if (e.keyCode == 13) {
+              var a =  $("#strid").val().trim().toUpperCase();
+              table.reload('demo_hash', {
+                  url: '/getProd'
+                  ,where: {prodno : a }
+              });
+              return false;//防止页面跳转刷新掉
+          }else if(e.keyCode == 27) {
+              layer.closeAll('iframe');
+              return false;//防止页面跳转刷新掉
+          }
+      };
+  });
+
+  function child(obj) {
+      $("#parentobj").val(obj);
+  }
+</script>
+<script src="/js/jquery-1.8.3.min.js"></script>

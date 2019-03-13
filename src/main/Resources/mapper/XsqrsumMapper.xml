@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzt.dao.XsqrDao">
+    <resultMap id="BaseResultMap" type="com.jzt.entity.Xsqrsum">
+        <id column="billid" jdbcType="VARCHAR" property="billid" />
+        <result column="custno" jdbcType="VARCHAR" property="custno" />
+        <result column="custname" jdbcType="VARCHAR" property="custname" />
+        <result column="yxsbillid" jdbcType="VARCHAR" property="yxsbillid" />
+        <result column="custadd" jdbcType="VARCHAR" property="custadd" />
+        <result column="note" jdbcType="VARCHAR" property="note" />
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.jzt.entity.Xsqrdet">
+        <id column="billid" jdbcType="VARCHAR" property="billid" />
+        <result column="prodno" jdbcType="VARCHAR" property="prodno" />
+        <result column="prodname" jdbcType="VARCHAR" property="prodname" />
+        <result column="quantity" jdbcType="VARCHAR" property="quantity" />
+        <result column="amount" jdbcType="VARCHAR" property="amount" />
+        <result column="prodspecification" jdbcType="VARCHAR" property="prodspecification" />
+        <result column="packageunit" jdbcType="VARCHAR" property="packageunit" />
+        <result column="manufacture" jdbcType="VARCHAR" property="manufacture" />
+        <result column="approvalno" jdbcType="VARCHAR" property="approvalno" />
+        <result column="sterilization" jdbcType="VARCHAR" property="sterilization" />
+        <result column="note" jdbcType="VARCHAR" property="note" />
+    </resultMap>
+
+
+    <insert id="inserXsqrsum" parameterType="Xsqrsum">
+        insert INTO XSQRSUM(billid,custno,custname,custadd,yxsbillid,note) values(#{billid},#{custno},#{custname},#{custadd},#{yxsbillid},#{note})
+    </insert>
+
+    <insert id="inserXsqrdet" parameterType="Xsqrdet">
+        insert INTO XSQRDET(billid,prodno,prodname,quantity,amount,prodspecification,packageunit,manufacture,approvalno,sterilization,note)
+        values(#{billid},#{prodno},#{prodname},#{quantity},#{amount},#{prodspecification},#{packageunit},#{manufacture},#{approvalno},#{sterilization},#{note})
+    </insert>
+
+    <update id="insUpdStatu" parameterType="Xsqrsum">
+        update YXSSUM set STATU = 1 where BILLID = #{yxsbillid}
+    </update>
+
+    <delete id="delXsqrsum" parameterType="Xsqrsum">
+        delete XSQRSUM where billid = #{billid}
+    </delete>
+
+    <delete id="delXsqrdet" parameterType="Xsqrdet">
+        delete XSQRDET where billid = #{billid}
+    </delete>
+
+    <select id="getXsqrsum" parameterType="Xsqrsum" resultMap="BaseResultMap">
+        select * from XSQRSUM
+    </select>
+
+    <select id="getOneXsqr" parameterType="Xsqrsum" resultMap="BaseResultMap">
+        select * from XSQRSUM where billid = #{billid}
+    </select>
+
+    <select id="getOneXsqrdet" parameterType="Xsqrdet" resultMap="BaseResultMap1">
+        select * from XSQRDET where billid = #{billid}
+    </select>
+
+    <update id="updXsqr" parameterType="Xsqrdet">
+        update XSQRDET set QUANTITY = #{quantity},AMOUNT = #{amount} where billid = #{billid}
+    </update>
+
+</mapper>

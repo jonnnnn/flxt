@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzt.dao.ProdmainDao">
+  <resultMap id="BaseResultMap" type="com.jzt.entity.Prodmain">
+    <id column="prodno" jdbcType="VARCHAR" property="prodno" />
+    <result column="prodspecification" jdbcType="VARCHAR" property="prodspecification" />
+    <result column="packageunit" jdbcType="VARCHAR" property="packageunit" />
+    <result column="manufacture" jdbcType="VARCHAR" property="manufacture" />
+    <result column="approvalno" jdbcType="VARCHAR" property="approvalno" />
+    <result column="sterilization" jdbcType="VARCHAR" property="sterilization" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+  </resultMap>
+
+  <resultMap id="BaseResultMap1" type="com.jzt.entity.Prodapi">
+    <id column="prodno" jdbcType="VARCHAR" property="prodno" />
+    <result column="prodname" jdbcType="VARCHAR" property="prodname" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+  </resultMap>
+
+
+
+  <select id="getProd"  resultMap="BaseResultMap">
+    select * from PRODMAIN a where rownum <![CDATA[ <= ]]> 50
+    <if test="prodno != null">
+    and (a.prodno = #{prodno}  or a.prodno like '%${prodno}%' or a.prodname like '%${prodno}%' or a.prodspecification like '%${prodno}%' or a.manufacture  like '%${prodno}%')
+  </if>
+  </select>
+
+  <select id="getProdapi"  resultMap="BaseResultMap1">
+    select * from PRODAPI where STATE = 0
+  </select>
+
+  <update id="updateCallProd" parameterType="Prodapi">
+   update  PRODAPI set STATE = #{state} where PRODNO = #{prodno}
+  </update>
+
+  <insert id="insCallProd" parameterType="Prodapi">
+    insert into PRODMAIN(PRODNO,PRODNAME) select PRODNO,PRODNAME from PRODAPI where PRODNO=#{prodno}
+  </insert>
+
+  <delete id="delCallProd">
+    delete PRODMAIN where PRODNO = #{prodno}
+  </delete>
+
+</mapper>

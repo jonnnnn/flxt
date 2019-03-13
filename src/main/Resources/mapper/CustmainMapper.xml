@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzt.dao.CustmainDao">
+  <resultMap id="BaseResultMap" type="com.jzt.entity.Custmain">
+    <id column="custno" jdbcType="VARCHAR" property="custno" />
+    <result column="custname" jdbcType="VARCHAR" property="custname" />
+    <result column="custadd" jdbcType="VARCHAR" property="custadd" />
+    <result column="custidentify" jdbcType="VARCHAR" property="custidentify" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+  </resultMap>
+  <resultMap id="BaseResultMap1" type="com.jzt.entity.Custapi">
+    <id column="custno" jdbcType="VARCHAR" property="custno" />
+    <result column="custname" jdbcType="VARCHAR" property="custname" />
+    <result column="statu" jdbcType="VARCHAR" property="statu" />
+  </resultMap>
+
+  <select id="getCust"  resultMap="BaseResultMap">
+    select * from CUSTMAIN a where rownum <![CDATA[ <= ]]> 50
+    <if test="custno != null">
+      and (a.custno = #{custno}  or a.custno like '%${custno}%' or a.custname like '%${custno}%' )
+    </if>
+  </select>
+
+  <select id="getCustapi" resultMap="BaseResultMap1" >
+     select * from CUSTAPI a where STATU = 0
+  </select>
+
+  <update id="updateCallCust" parameterType="Custapi">
+   update  CUSTAPI set STATU = #{statu} where custno = #{custno}
+  </update>
+
+  <insert id="insCallCust" parameterType="Custapi">
+    insert into custmain(custno,custname) select CUSTNO,CUSTNAME from CUSTAPI where custno=#{custno}
+  </insert>
+
+  <delete id="delCallCust">
+    delete CUSTMAIN where custno = #{custno}
+  </delete>
+
+</mapper>

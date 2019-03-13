@@ -1,0 +1,348 @@
+<style type="text/css">
+    ol{list-style-type:demical;width:200px;}
+    ol li{ list-style-position:outside;}
+</style>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>预销售</legend>
+                    </fieldset>
+
+                    <form class="layui-form"  method="post" id="sumform" onsubmit="return false">
+                        <div class="layui-form-item" id="custinfoid">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">客户编码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="custno" id="custnoid" readonly  lay-verify="required" readonly autocomplete="on"
+                                           class="layui-input" >
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">客户名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="custname" id="custnameid" readonly lay-verify="required" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">客户地址</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="custadd" id="custaddid" readonly autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">单据备注</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="note" id="noteid"  autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                    <form class="layui-form"  method="post" id="detform" onsubmit="return false">
+                        <ul id="lzul">
+                        <li id="prod1">
+                        <div class="layui-form-item" >
+                            <div class="layui-inline">
+                                <label class="layui-form-label">商品编码</label>
+                                <div class="layui-input-inline">
+                                   <span><input type="text" name="prodno" id="prodnoid"  readonly lay-verify="required" autocomplete="off" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline" ondblclick="seletprod(this)">
+                                <label class="layui-form-label" >商品名称</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="prodname" id="prodnameid" readonly autocomplete="off"  readonly class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">规格</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="prodspecification" readonly id="prodspecificationid"  autocomplete="off" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">包装单位</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="packageunit" id="packageunitid" readonly autocomplete="off" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">生产厂家</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="manufacture" id="manufactureid" readonly  autocomplete="off" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">批准文号</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="approvalno" id="approvalnoid" readonly  autocomplete="off" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">灭菌方式</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="sterilization"   autocomplete="off" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">数量</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="quantity"  autocomplete="off" lay-verify="required" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">价格</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="amount"  autocomplete="off" lay-verify="required" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">明细备注</label>
+                                <div class="layui-input-inline">
+                                    <span><input type="text" name="note"   autocomplete="off" class="layui-input"></span>
+                                </div>
+                            </div>
+                            <!--<button class="layui-btn" onclick="deldet(this)">删除</button>-->
+                        </div>
+                        </li>
+                        </ul>
+                    </form>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="demo1_hash"  >立即提交</button>
+                            <button  class="layui-btn layui-btn-primary" onclick="adddet()">新增</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'jquery','layer'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            layer = layui.layer;
+        form.render();
+
+        $.fn.serializeObject = function()
+        {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+
+        //监听提交
+        form.on('submit(demo1_hash)', function (data) {
+            var yxsdets = []; //全局变量
+            var para = $('#sumform').serializeObject() ;
+            yxsdets.push(para);
+            $("#lzul").find("li").each(function(m){  //遍历每个li，当前有两个li
+                var recieverAttributes = [];
+                $(this).find("span").each(function(n){  //遍历每个li下的span，而每个li下有三个span
+                    recieverAttributes[n] = $(this).children("input").val();  //找到每个span下存放着数据的input框，并获取值存放到数组中
+                });
+                var recieverObj = {
+                    prodno:recieverAttributes[0],
+                    prodname:recieverAttributes[1],
+                    prodspecification:recieverAttributes[2],
+                    packageunit:recieverAttributes[3],
+                    manufacture:recieverAttributes[4],
+                    approvalno:recieverAttributes[5],
+                    sterilization:recieverAttributes[6],
+                    quantity:recieverAttributes[7],
+                    amount:recieverAttributes[8],
+                    note:recieverAttributes[9]
+                };
+                yxsdets.push(recieverObj);
+            });
+/*---------------------------------------数据验证--------------------------------------*/
+            if(yxsdets[0].custname.trim() == ""){
+                    layer.msg("请填写客户信息！");
+                    return false;
+            }
+            var falgamount = [] ;
+            var falgquantity = [] ;
+            for (var n = 1;n < yxsdets.length;n++){
+                if(yxsdets[n].prodno.trim()==""){
+                    layer.msg("请选择商品！");
+                    return false;
+                }
+                if (yxsdets[n].amount.trim() == ""){
+                    falgamount.push(n)
+                 }
+                if (yxsdets[n].quantity.trim() == ""){
+                    falgquantity.push(n)
+                }
+            }
+            if (falgamount.length!=0&&falgquantity.length!=0){
+                layer.msg("请填写第"+falgquantity+"个商品的数量 和 第"+falgamount+"个商品的价格！");
+                return false;
+            } else if(falgamount.length!=0){
+                layer.msg("请填写第"+falgamount+"个商品的价格！");
+                return false;
+            }else if(falgquantity.length!=0){
+                layer.msg("请填写第"+falgquantity+"个商品的数量！");
+                return false;
+            }
+  /*-----------------------------------------数据验证------------------------------------*/
+            layer.confirm('确认提交？', function () {
+                $.ajax({
+                    url: 'insYxs',
+                    type:'post',
+                    dataType:"json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(yxsdets),
+                    success:function (res) {
+                        layer.msg(res.msg);
+                    },error:function (res) {
+                        layer.msg('网络错误!');
+                    }
+                });
+            });
+        });
+
+        $("#custinfoid").dblclick(function () {
+            layer.open({
+                type: 2,
+                title: '选择客户',
+                shadeClose: true,
+                shade: 0.8,
+                /*  btn:['提交','关闭'],*/
+                area: ['60%', '90%'],//宽 高
+                content: 'views/lz/selcust.html',
+                success:function (layero,index ) {
+
+                }
+            });
+        });
+    });
+
+    //获取子界面传值
+    function GetValue(custdatas) {
+         $("#custnoid").val(custdatas[0]);
+         $("#custnameid").val(custdatas[1]);
+         $("#custaddid").val(custdatas[2]);
+    }
+
+    function adddet() {
+        var timestamp = (new Date()).getTime();
+        $("#lzul").append(' <li id="'+timestamp+'">\n' +
+            '                        <div class="layui-form-item" >\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">商品编码</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                   <span><input type="text" name="prodno"  lay-verify="required"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline" ondblclick="seletprod(this)">\n' +
+            '                                <label class="layui-form-label" >商品名称</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="prodname"  autocomplete="off"  readonly class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">规格</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="prodspecification"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">包装单位</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="packageunit"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">生产厂家</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="manufacture"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">批准文号</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="approvalno"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">灭菌方式</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="sterilization"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">数量</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="quantity"  lay-verify="required" autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">价格</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="amount" lay-verify="required"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <div class="layui-inline">\n' +
+            '                                <label class="layui-form-label">明细备注</label>\n' +
+            '                                <div class="layui-input-inline">\n' +
+            '                                    <span><input type="text" name="note"  autocomplete="off" class="layui-input"></span>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                            <button class="layui-btn" onclick="deldet(this)">删除</button>\n' +
+            '                        </div>\n' +
+            '                        </li>');
+
+    }
+
+    function deldet(obj) {
+        obj.parentNode.parentNode.remove();
+    }
+
+    function seletprod(obj) {
+        layui.use(['jquery','layer'], function () {
+            var $ = layui.jquery,
+                layer = layui.layer;
+            layer.open({
+                type: 2,
+                title: '选择商品',
+                shadeClose: true,
+                shade: 0.8,
+                /*  btn:['提交','关闭'],*/
+                area: ['60%', '90%'],//宽 高
+                content: 'views/lz/SelectProd.html',
+                success:function (layero,index ) {
+                    var iframe = window['layui-layer-iframe'+index];
+                    iframe.child(obj.parentElement.parentElement.id);
+                }
+            });
+        });
+    }
+
+    function GetProdValue(parentobj,datas) {
+        $("#"+parentobj+"").each(function () {
+           $(this).find("span").each(function (n) {
+               $(this).children("input").val(datas[n]);
+           }) ;
+        });
+    }
+
+</script>
+<script src="/js/jquery-1.8.3.min.js"></script>
+

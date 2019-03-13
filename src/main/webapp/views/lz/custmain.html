@@ -1,0 +1,103 @@
+<div class="layui-fluid">
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <div class="layui-card">
+        <div class="layui-card-header">
+
+          <span>客户基础资料</span>
+        </div>
+        <div class="layui-card-body">
+          <div class="layui-card-header">
+
+          </div>
+          <div class="layui-card-body">
+            <table id="demo_hash" lay-filter="test"></table>
+            <script type="text/html" id="barDemo_hash">
+               <!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+              <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+    layui.config({
+        version: '1522709297490' //为了更新 js 缓存，可忽略
+    });
+        layui.config({
+    base: '/src/js/'
+  }).use(['jquery', 'table', 'form'], function () {
+    var $ = layui.jquery,
+      layer = layui.layer,
+      table = layui.table,
+      sidebar = layui.sidebar,
+      form = layui.form;
+
+    //第一个实例123
+    table.render({
+      method: 'post',
+      // size: 'sm',
+     /* limit: 20,*/
+      elem: '#demo_hash',
+      height: 'full-235',
+      url: 'getCust', //数据接口
+      text:{
+          none:'暂无相关数据'
+      },
+      page: false, //开启分页
+      cols: [
+        [ //表头
+          {
+            field: 'custno',
+            title: '客户编码',
+            width: 180,
+            sort: true,
+            fixed: 'left'
+          }, {
+            field: 'custname',
+            title: '客户名',
+            width: 200
+          }, {
+            field: 'custadd',
+            title: '客户地址',
+            width: 200
+        }, {
+            field: 'custidentify',
+            title: '客户标识',
+            width: 180
+        }, {
+            field: 'note',
+            title: '备注',
+            width: 180
+        }
+        ]
+      ]
+    });
+
+            //监听单元格编辑
+            table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的DOM对象
+                if (layEvent === 'del') { //取消调用
+                    layer.confirm('确定删除？', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                        layer.close(index);
+                        //向服务端发送调用指令
+                        $.post('delCallCust', {custno : data.custno,statu : 0}, function (res) {
+                            console.log(res);
+                            layer.msg(res.success ? '网络错误' : res.msg);
+                        }, 'json');
+                    });
+                }
+            });
+
+  });
+
+</script>
+

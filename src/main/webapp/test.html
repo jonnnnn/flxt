@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>选项</title>
+
+    <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+
+    <script>
+        $(function(){
+            // 添加选项
+            $("#opbtn").click(function(){
+                if($("#opts>li").size() < 6){// 最多添加6个选项
+                    $("#opts").append("<li><input type='text' value='鲁仲'/></li>");
+                }else{// 提示选项个数已经达到最大
+                    $("#optips").html("选项个数已经达到最大,不能再添加!");
+                    $("#optips").css({"color":"red"});
+                }
+
+            });
+
+            // 删除选项
+            $("#delbtn").click(function(){
+                if($("#opts>li").size() <= 0){
+                    $("#optips").html("已经没有选项可以删除了!");
+                    $("#optips").css({"color":"red"});
+                } else{
+                    // 删除选项,每次删除最后一个
+                    $("#opts>li").last().remove();
+                }
+
+            });
+
+
+
+        });
+
+    </script>
+
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #dv{
+            width: 100px;
+            height: 100px;
+            background-color: yellow;
+            margin: 0px auto 0px;
+        }
+
+    </style>
+</head>
+<body>
+<div style="margin: 50px;">
+    <input id="opbtn" type="button" value="添加选项"/>
+    <input id="delbtn" type="button" value="删除选项"/>
+    <input id="wrapbtn" type="button" value="包围DIV"/>
+    <div id="opts" type="A"></div>
+
+    <!-- 提示语 -->
+    <span id="optips"></span>
+</div>
+
+
+</body>
+</html>
