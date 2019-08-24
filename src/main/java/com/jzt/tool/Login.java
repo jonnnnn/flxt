@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/*登陆验证*/
 public class Login implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
@@ -15,7 +16,7 @@ public class Login implements HandlerInterceptor {
         // 返回false则不执行拦截
         HttpSession session = request.getSession();
         String uri = request.getRequestURI(); // 获取登录的uri，这个是不进行拦截的
-        if(session.getAttribute("username")!=null || uri.indexOf("index.jsp")!=-1) {// 说明登录成功 或者 执行登录功能
+        if(session.getAttribute("username")!=null || uri.contains("index.jsp")) {// 说明登录成功 或者 执行登录功能
             // 登录成功不拦截
             return true;
         }else {

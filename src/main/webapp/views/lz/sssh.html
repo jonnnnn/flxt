@@ -1,0 +1,265 @@
+<script src="js/jquery-1.8.3.min.js"></script>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <span>实收审核</span>
+                </div>
+                <div class="layui-card-body">
+                    <label class="layui-form-label">商品编码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="prodno" id="prodnoid" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" id="serchid">搜索</button>
+                    </div>
+
+                    <div class="layui-card-body">
+                        <table id="demo_hash" lay-filter="test"></table>
+                        <script type="text/html" id="barDemo_hash">
+                             <a class="layui-btn layui-btn-xs" lay-event="edit">通过</a>
+                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">驳回</a>
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="statas" value="0">
+
+<script>
+    layui.config({
+        version: '1522709297490' //为了更新 js 缓存，可忽略
+    });
+    layui.config({
+        base: '/src/js/'
+    }).use(['jquery', 'table',  'form'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            table = layui.table,
+            form = layui.form;
+
+        //第一个实例123
+        table.render({
+            method: 'post',
+            // size: 'sm',
+            /* limit: 20,*/
+            elem: '#demo_hash',
+            height: 'full-235',
+            url: 'getQrlr', //数据接口
+            where:{statu:1},
+            text: {
+                none: '暂无相关数据'
+            },
+            page: true, //开启分页
+            cols: [
+                [ //表头
+
+                    {
+                        field: 'createtime',
+                        title: '单据日期',
+                        width: 120,
+                        sort: true
+                    },{
+                    field: 'ssje',
+                    title: '实收金额',
+                    width: 120
+                },{
+                    field: 'bcss',
+                    title: '本次实收',
+                    width: 120
+                },{
+                    field: 'billid',
+                    title: '单据编号',
+                    width: 200
+                },{
+                    field: 'begindate',
+                    title: '政策开始日期',
+                    width: 200,
+                    sort: true
+                }, {
+                    field: 'enddate',
+                    title: '政策结束日期',
+                    width: 200
+                }, {
+                    field: 'supno',
+                    title: '供应商编码',
+                    width: 220
+                }, {
+                    field: 'supname',
+                    title: '供应商名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodno',
+                    title: '商品编码',
+                    width: 220
+                }, {
+                    field: 'prodname',
+                    title: '商品名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodspecification',
+                    title: '规格',
+                    width: 220
+                }, {
+                    field: 'packageunit',
+                    title: '包装单位',
+                    width: 220
+                }, {
+                    field: 'purchaser',
+                    title: '采购员',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'custno',
+                    title: '客户编码',
+                    width: 220
+                }, {
+                    field: 'custname',
+                    title: '客户名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'ownerareatext',
+                    title: '所属大区',
+                    width: 220
+                }, {
+                    field: 'price',
+                    title: '销售价',
+                    width: 220
+                }, {
+                    field: 'getprice',
+                    title: '购进价',
+                    width: 220
+                }, {
+                    field: 'flmark',
+                    title: '返利政策',
+                    width: 220
+                }, {
+                    field: 'fltype',
+                    title: '政策类型',
+                    width: 220
+                }, {
+                    field: 'flprice',
+                    title: '返利单价',
+                    width: 220
+                }, {
+                    field: 'dftime',
+                    title: '兑付时间',
+                    width: 220
+                }, {
+                    field: 'dftype',
+                    title: '兑付方式',
+                    width: 220
+                }, {
+                    field: 'contactsman',
+                    title: '供应商联系人',
+                    width: 220
+                }, {
+                    field: 'note',
+                    title: '备注',
+                    width: 220
+                }, {
+                    field: 'note2',
+                    title: '实收备注',
+                    width: 220
+                }, {
+                    field: 'ylrbillid',
+                    title: '预录入单号',
+                    width: 220
+                },{
+                    width: 120,
+                    fixed:'right',
+                    title: '审核',
+                    align: 'center',
+                    /* fiex:right,*/
+                    toolbar: '#barDemo_hash'
+                }
+                ]
+            ]
+        });
+
+
+        //监听单元格编辑
+        table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if (layEvent === 'edit') { //查看
+                layer.confirm('确认通过？', function (index) {
+                    $.post('sssh', {billid: data.billid,ssje:data.ssje,bcss:data.bcss,note2:data.note2}, function (res) {
+                        layer.msg(res.success ? '网络错误！' : res.msg);
+                    }, 'json');
+                    table.reload('demo_hash', {
+                        url: 'getQrlr',
+                        where: {statu:1}
+                    });
+                });
+
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('确认驳回？', function (index) {
+                    $.post('ssshbo', {billid: data.billid,ssje:data.ssje}, function (res) {
+                        layer.msg(res.success ? '网络错误！' : res.msg);
+                    }, 'json');
+                    table.reload('demo_hash', {
+                        url: 'getQrlr',
+                        where: {statu:1}
+                    });
+                });
+            }
+        });
+
+        function getTable(){
+            /* var billid = $("#strid").val().trim().toUpperCase();
+        var begindate = $("#begindateid").val().trim();
+        var enddate = $("#enddateid").val().trim();
+        var supname = $("#supnameid").val().trim();
+        var prodname = $("#prodnameid").val().trim();*/
+            var prodno = $("#prodnoid").val().trim().toUpperCase();
+            /*  var custname = $("#custnameid").val().trim();
+              var purchaser = $("#purchaserid").val().trim();
+              var ylrbillid = $("#ylrbillidid").val().trim().toUpperCase();*/
+            console.log(prodno);
+            table.reload('demo_hash', {
+                url: 'getQrlr'
+                ,where: {
+                    /*billid: billid,
+                    begindate:begindate,
+                    enddate:enddate,
+                    supname:supname,
+                    prodname:prodname,*/
+                    prodno:prodno,
+                    /* custname:custname,
+                     purchaser:purchaser,
+                     ylrbillid:ylrbillid,*/
+                    statu:1
+                }
+            });
+        }
+
+    $("#serchid").click(function () {
+        getTable();
+    });
+
+    document.onkeydown = function (e) {
+        e = e ? e : event;// 兼容FF
+        if (e.keyCode == 13) {
+            getTable();
+            return false;//防止页面跳转刷新掉
+        }else if(e.keyCode == 27) {
+            layer.closeAll('iframe');
+            return false;//防止页面跳转刷新掉
+        }
+    };
+    });
+    //状态传递,实收审核界面只能查到确认录入状态为1的单子
+    function getStates(obj) {
+        $("#statas").val(obj);
+    }
+
+</script>

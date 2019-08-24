@@ -1,7 +1,5 @@
 package com.jzt.action;
 
-import com.jzt.entity.Custapi;
-import com.jzt.entity.Prodapi;
 import com.jzt.entity.Prodmain;
 import com.jzt.services.ProdmainServices;
 import com.jzt.tool.R;
@@ -26,32 +24,4 @@ public class ProdmainAction {
         return R.data("OK",prodmainList);
     }
 
-    /*获取API商品信息*/
-    @RequestMapping("getProdapi")
-    @ResponseBody
-    public R getProdapi(Prodapi prodapi){
-        List<Prodapi> prodmainapiList = prodmainServices.getProdapi(prodapi);
-        return R.data("OK",prodmainapiList);
-    }
-
-    /*调用API表中商品信息*/
-    @RequestMapping("updateCallProd")
-    @ResponseBody
-    public R updateCallProd(Prodapi prodapi){
-        System.out.println("State:"+prodapi.getState());
-        prodmainServices.updateCallProd(prodapi);
-        prodmainServices.insCallProd(prodapi);
-        List<Custapi> list = new ArrayList<>();
-        return R.data("已调用！",list);
-    };
-
-    /*取消调用API表商品信息*/
-    @RequestMapping("delCallProd")
-    @ResponseBody
-    public R delCallProd(Prodapi prodapi){
-        prodmainServices.updateCallProd(prodapi);
-        prodmainServices.delCallProd(prodapi);
-        List<Custapi> list = new ArrayList<>();
-        return R.data("已取消调用！",list);
-    };
 }

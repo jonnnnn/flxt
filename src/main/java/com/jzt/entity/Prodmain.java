@@ -14,6 +14,11 @@ public class Prodmain {
   private String deleteflag;
   private String note;
   private String suplier;
+  private java.sql.Date createtime;
+  private String purchaser;
+  private String prodid;
+  private String branchid;
+  private String purchaseid;
 
 
   public String getProdno() {
@@ -112,6 +117,51 @@ public class Prodmain {
 
   public void setSuplier(String suplier) {
     this.suplier = suplier;
+  }
+
+
+  public java.sql.Date getCreatetime() {
+    return createtime;
+  }
+
+  public void setCreatetime(java.sql.Date createtime) {
+    this.createtime = createtime;
+  }
+
+
+  public String getPurchaser() {
+    return purchaser;
+  }
+
+  public void setPurchaser(String purchaser) {
+    this.purchaser = purchaser;
+  }
+
+
+  public String getProdid() {
+    return prodid;
+  }
+
+  public void setProdid(String prodid) {
+    this.prodid = prodid;
+  }
+
+
+  public String getBranchid() {
+    return branchid;
+  }
+
+  public void setBranchid(String branchid) {
+    this.branchid = branchid;
+  }
+
+
+  public String getPurchaseid() {
+    return purchaseid;
+  }
+
+  public void setPurchaseid(String purchaseid) {
+    this.purchaseid = purchaseid;
   }
 
 }

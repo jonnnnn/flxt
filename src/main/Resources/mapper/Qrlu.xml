@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzt.dao.QrluDao">
+    <resultMap id="BaseResultMap" type="com.jzt.entity.Qrlr">
+    <id column="billid" jdbcType="VARCHAR" property="billid" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="note2" jdbcType="VARCHAR" property="note2" />
+    <result column="statu" jdbcType="VARCHAR" property="statu" />
+    <result column="begindate" jdbcType="VARCHAR" property="begindate" />
+    <result column="enddate" jdbcType="VARCHAR" property="enddate" />
+    <result column="supno" jdbcType="VARCHAR" property="supno" />
+    <result column="supname" jdbcType="VARCHAR" property="supname" />
+    <result column="prodno" jdbcType="VARCHAR" property="prodno" />
+    <result column="prodname" jdbcType="VARCHAR" property="prodname" />
+    <result column="prodspecification" jdbcType="VARCHAR" property="prodspecification" />
+    <result column="packageunit" jdbcType="VARCHAR" property="packageunit" />
+    <result column="custno" jdbcType="VARCHAR" property="custno" />
+    <result column="custname" jdbcType="VARCHAR" property="custname" />
+    <result column="price" jdbcType="VARCHAR" property="price" />
+    <result column="getprice" jdbcType="VARCHAR" property="getprice" />
+    <result column="flmark" jdbcType="VARCHAR" property="flmark" />
+    <result column="fltype" jdbcType="VARCHAR" property="fltype" />
+    <result column="flprice" jdbcType="VARCHAR" property="flprice" />
+    <result column="dftime" jdbcType="VARCHAR" property="dftime" />
+    <result column="dftype" jdbcType="VARCHAR" property="dftype" />
+    <result column="contactsman" jdbcType="VARCHAR" property="contactsman" />
+    <result column="ylrbillid" jdbcType="VARCHAR" property="ylrbillid" />
+    <result column="allcount" jdbcType="INTEGER" property="allcount" />
+    <result column="ssje" jdbcType="INTEGER" property="ssje" />
+</resultMap>
+
+    <insert id="inserQrlr" parameterType="Qrlr">
+        insert INTO qrlr(pk,billid,note,begindate,enddate,supno,supname,prodno,prodname,prodspecification,packageunit,custno,custname,price,getprice,flmark,fltype,flprice,dftime,dftype,contactsman,ylrbillid,contactsphone,staff,purchaser,ownerareatext,custtypename)
+        values(QRLR_pk.Nextval,#{billid},#{note},#{begindate},#{enddate},#{supno},#{supname},#{prodno},#{prodname},#{prodspecification},#{packageunit},#{custno},#{custname},#{price},#{getprice},#{flmark},#{fltype},#{flprice},#{dftime},#{dftype},#{contactsman},#{ylrbillid},#{contactsphone},#{staff},#{purchaser},#{ownerareatext},#{custtypename})
+    </insert>
+
+    <insert id="inserSs" parameterType="Qrlr">
+        insert into ss (pk,billid,ssje,note)
+        values (SS_PK.Nextval,#{billid},#{ssje},#{note2})
+    </insert>
+
+    <update id="insUpdStatu" parameterType="Qrlr">
+        update ylr set lastmodifytime = sysdate,statu = 2 where BILLID = #{ylrbillid}
+    </update>
+
+    <update id="sslr">
+        update qrlr <set>
+        lastmodifytime = sysdate,ssje = #{ssje},bcss = #{bcss},
+        <if test="note2 != null">
+        note2 = #{note2}
+        </if>
+    </set>
+          where billid = #{billid}
+    </update>
+
+    <update id="updQrStatu" parameterType="Qrlr">
+        update qrlr set lastmodifytime = sysdate,statu = #{statu} where billid = #{billid}
+    </update>
+
+    <delete id="delQrlr" parameterType="Qrlr">
+        update qrlr set lastmodifytime = sysdate,deleteflag = 1 where billid = #{billid}
+    </delete>
+
+    <select id="getQrlrCount" resultMap="BaseResultMap" parameterType="Qrlr">
+    select *
+    from (select t.*, rownum rn
+    from (
+    select count(*) over() allcount,a.* from qrlr a where DELETEFLAG = 0 and a.IS_NEW = 1
+    <if test="billid!=null">
+        and a.billid like '%${billid}%'
+    </if>
+    <if test="begindate!=null">
+        <if test="enddate!=null">
+            and  a.createtime between  to_date('${begindate}','yyyy-mm-dd') and to_date('${enddate}','yyyy-mm-dd')+1
+        </if>
+    </if>
+    <if test="prodname!=null">
+        and a.prodname like '%${prodname}%'
+    </if>
+    <if test="prodno!=null">
+        and a.prodno like '%${prodno}%'
+    </if>
+    <if test="purchaser!=null">
+        and a.purchaser like '%${purchaser}%'
+    </if>
+    <if test="ylrbillid!=null">
+        and a.ylrbillid like '%${ylrbillid}%'
+    </if>
+    <if test="statu!=null">
+        and  statu = #{statu}
+    </if>
+    order by a.billid desc) t
+    where rownum <![CDATA[ <= ]]> #{page} * #{limit})
+    where rn <![CDATA[ > ]]> (#{page}-1) * #{limit}
+</select>
+
+
+    <select id="getSsmm" parameterType="Qrlr" resultMap="BaseResultMap">
+        select *
+        from (select t.*, rownum rn
+        from (
+        select  count(*) over() allcount, a.CREATETIME,BILLID,SSJE,note,count(BILLID) over (PARTITION by BILLID) lrcount from ss a where a.deleteflag = 0
+        <if test="billid!=null">
+            and a.billid like '%${billid}%'
+        </if>
+        order by a.billid desc) t
+        where rownum <![CDATA[ <= ]]> #{page} * #{limit})
+        where rn <![CDATA[ > ]]> (#{page}-1) * #{limit}
+    </select>
+
+
+</mapper>

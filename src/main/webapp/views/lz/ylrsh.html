@@ -1,0 +1,254 @@
+<script src="js/jquery-1.8.3.min.js"></script>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <span>预录入审核</span>
+                </div>
+                <div class="layui-card-body">
+                    <label class="layui-form-label">商品编码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="prodno" id="prodnoid" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" id="serchid">搜索</button>
+                    </div>
+                    <div class="layui-card-body">
+                        <table id="demo_hash" lay-filter="test"></table>
+                        <script type="text/html" id="barDemo_hash">
+                            <a class="layui-btn layui-btn-xs" lay-event="detail">通过</a>
+                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">驳回</a>
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="statas" value="0">
+<script>
+    layui.config({
+        version: '1522709297490' //为了更新 js 缓存，可忽略
+    });
+    layui.config({
+        base: '/src/js/'
+    }).use(['jquery', 'table'  ], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            table = layui.table;
+
+        //第一个实例123
+        table.render({
+            method: 'post',
+            // size: 'sm',
+            /* limit: 20,*/
+            elem: '#demo_hash',
+            height: 'full-235',
+            url: 'getYlr', //数据接口
+            where:{statu:0},
+            text: {
+                none: '暂无相关数据'
+            },
+            page: true, //开启分页
+            cols: [
+                [ //表头
+
+                    {
+                        field: 'zizeng',
+                        title: '序号',
+                        width: 60,
+                        type: 'numbers'
+                    },{
+                        field: 'createtime',
+                        title: '单据日期',
+                        width: 120,
+                        sort: true
+                    },{
+                        field: 'billid',
+                        title: '单据编号',
+                        width: 200
+                    },{
+                        field: 'begindate',
+                        title: '政策开始日期',
+                        width: 200,
+                        sort: true
+                    }, {
+                    field: 'enddate',
+                    title: '政策结束日期',
+                    width: 200
+                }, {
+                    field: 'supno',
+                    title: '供应商编码',
+                    width: 220
+                }, {
+                    field: 'supname',
+                    title: '供应商名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodno',
+                    title: '商品编码',
+                    width: 220
+                }, {
+                    field: 'prodname',
+                    title: '商品名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodspecification',
+                    title: '规格',
+                    width: 220
+                }, {
+                    field: 'packageunit',
+                    title: '包装单位',
+                    width: 220
+                }, {
+                    field: 'purchaser',
+                    title: '采购员',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'custno',
+                    title: '客户编码',
+                    width: 220
+                }, {
+                    field: 'custname',
+                    title: '客户名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'ownerareatext',
+                    title: '所属大区',
+                    width: 220
+                }, {
+                    field: 'custtypename',
+                    title: '客户类型',
+                    width: 220
+                }, {
+                    field: 'price',
+                    title: '销售价',
+                    width: 220
+                }, {
+                    field: 'getprice',
+                    title: '购进价',
+                    width: 220
+                }, {
+                    field: 'flmark',
+                    title: '返利政策',
+                    width: 220
+                }, {
+                    field: 'fltype',
+                    title: '政策类型',
+                    width: 220
+                }, {
+                    field: 'flprice',
+                    title: '返利单价',
+                    width: 220
+                }, {
+                    field: 'dftime',
+                    title: '兑付时间',
+                    width: 220
+                }, {
+                    field: 'dftype',
+                    title: '兑付方式',
+                    width: 220
+                }, {
+                    field: 'contactsman',
+                    title: '供应商联系人',
+                    width: 220
+                }, {
+                    field: 'contactsphone',
+                    title: '供应商联系人电话',
+                    width: 220
+                },{
+                    field: 'note',
+                    title: '备注',
+                    width: 220
+                },{
+                    width: 120,
+                    fixed:'right',
+                    title: '审核',
+                    align: 'center',
+                    toolbar: '#barDemo_hash'
+                }
+                ]
+            ]
+        });
+
+        //监听单元格编辑
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+            var tr = obj.tr;
+            if (layEvent === 'detail') { //查看
+                layer.confirm('确认通过？', function (index) {
+                $.post('updState', {billid: data.billid,statu:1}, function (res) {
+                    layer.msg(res.success ? '网络错误' : '已通过！');
+                }, 'json');
+                    table.reload('demo_hash', {
+                        url: 'getYlr',
+                        where: {statu:0}
+                    });
+                });
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('确认驳回？', function (index) {
+                    $.post('updQraddStatu', {billid: data.billid,statu:8}, function (res) {
+                        layer.msg(res.success ? '网络错误' : '已驳回！');
+                    }, 'json');
+
+                    table.reload('demo_hash', {
+                        url: 'getYlr',
+                        where: {statu:0}
+                    });
+
+                });
+            }
+        });
+
+        function getTable(){
+            /* var billid = $("#strid").val().trim().toUpperCase();
+        var begindate = $("#begindateid").val().trim();
+        var enddate = $("#enddateid").val().trim();
+        var supname = $("#supnameid").val().trim();
+        var prodname = $("#prodnameid").val().trim();*/
+            var prodno = $("#prodnoid").val().trim().toUpperCase();
+            /*  var custname = $("#custnameid").val().trim();
+              var purchaser = $("#purchaserid").val().trim();
+              var ylrbillid = $("#ylrbillidid").val().trim().toUpperCase();*/
+            console.log(prodno);
+            table.reload('demo_hash', {
+                url: 'getYlr'
+                ,where: {
+                    /*billid: billid,
+                    begindate:begindate,
+                    enddate:enddate,
+                    supname:supname,
+                    prodname:prodname,*/
+                    prodno:prodno,
+                    /* custname:custname,
+                     purchaser:purchaser,
+                     ylrbillid:ylrbillid,*/
+                    statu:0
+                }
+            });
+        }
+
+        $("#serchid").click(function () {
+            getTable();
+        });
+
+        document.onkeydown = function (e) {
+            e = e ? e : event;// 兼容FF
+            if (e.keyCode == 13) {
+                getTable();
+                return false;//防止页面跳转刷新掉
+            }else if(e.keyCode == 27) {
+                layer.closeAll('iframe');
+                return false;//防止页面跳转刷新掉
+            }
+        };
+    });
+
+</script>

@@ -22,27 +22,26 @@ public class UseresAction {
 
     @RequestMapping("logins")
     @ResponseBody
-    public R logins(Useres useres, HttpSession session){
+    public R logins(Useres useres, HttpSession session,HttpServletResponse response,HttpServletRequest request) throws Exception{
         Useres useres1 = useresServices.login(useres);
-        List list = new ArrayList();
         if(useres1 != null){
-            session.setAttribute("username",useres.getUsername());
-            return R.data("1",list);
+            session.setAttribute("username",useres1.getUsername());
+            session.setAttribute("menu",useres1.getMenu());
+          /*  response.sendRedirect(request.getContextPath()+"/index.jsp");*/
+            return R.data("1");
         }else{
-            return R.data("0",list);
+            return R.data("0");
         }
     }
 
     @RequestMapping("loginout")
     @ResponseBody
     public R loginout(Useres useres, HttpSession session, HttpServletResponse response, HttpServletRequest request) throws IOException {
-        List list = new ArrayList();
         session.removeAttribute("username");
         response.sendRedirect(request.getContextPath()+"/index.jsp");
-       return R.data("0",list);
+       return R.data("0");
     }
 }
 
-/*没意思，根本就不在乎。放弃吧！*/
 
 

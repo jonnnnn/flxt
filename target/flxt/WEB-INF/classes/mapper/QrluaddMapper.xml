@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzt.dao.QrluaddDao">
+    <resultMap id="BaseResultMap" type="com.jzt.entity.QrlrAdd">
+    <id column="billid" jdbcType="VARCHAR" property="billid" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+
+</resultMap>
+
+    <insert id="inserQrlradd" parameterType="QrlrAdd">
+        insert INTO QRLR_ADD(pk,billid,note,begindate,enddate,supno,supname,prodno,prodname,prodspecification,packageunit,custno,custname,price,getprice,flmark,fltype,flprice,dftime,dftype,contactsman,ylrbillid,contactsphone,ssje,staff,purchaser,ownerareatext,custtypename,note2)
+        values('FWXQRLRADD000'||qrlr_add_pk.nextval,#{billid},#{note},#{begindate},#{enddate},#{supno},#{supname},#{prodno},#{prodname},#{prodspecification},#{packageunit},#{custno},#{custname},#{price},#{getprice},#{flmark},#{fltype},#{flprice},#{dftime},#{dftype},#{contactsman},#{ylrbillid},#{contactsphone},#{ssje},#{staff},#{purchaser},#{ownerareatext},#{custtypename},#{note2})
+    </insert>
+
+    <select id="Qradd" statementType="CALLABLE">
+        call qrlradd(#{p_pk,mode = IN,jdbcType=VARCHAR})
+    </select>
+
+    <update id="updQraddStatu" parameterType="QrlrAdd">
+        update QRLR_ADD set lastmodifytime = sysdate,statu = #{statu} where pk = #{pk}
+    </update>
+
+    <delete id="delQrlradd" parameterType="QrlrAdd">
+        update QRLR_ADD set lastmodifytime = sysdate,deleteflag = 1 where pk = #{pk}
+    </delete>
+
+    <select id="getQrlraddCount" resultMap="BaseResultMap" parameterType="QrlrAdd">
+        select *
+        from (select t.*, rownum rn
+        from (
+        select count(*) over() allcount,a.* from QRLR_ADD a where DELETEFLAG = 0
+        <if test="billid!=null">
+            and a.billid like '%${billid}%'
+        </if>
+        <if test="begindate!=null">
+            <if test="enddate!=null">
+                and  a.createtime between  to_date('${begindate}','yyyy-mm-dd') and to_date('${enddate}','yyyy-mm-dd')+1
+            </if>
+        </if>
+        <if test="prodname!=null">
+            and a.prodname like '%${prodname}%'
+        </if>
+        <if test="prodno!=null">
+            and a.prodno like '%${prodno}%'
+        </if>
+        <if test="purchaser!=null">
+            and a.purchaser like '%${purchaser}%'
+        </if>
+        <if test="pk!=null">
+            and a.pk like '%${pk}%'
+        </if>
+
+        <if test="statu!=null">
+            and  statu = #{statu}
+        </if>
+        order by a.billid desc) t
+        where rownum <![CDATA[ <= ]]> #{page} * #{limit})
+        where rn <![CDATA[ > ]]> (#{page}-1) * #{limit}
+    </select>
+
+</mapper>

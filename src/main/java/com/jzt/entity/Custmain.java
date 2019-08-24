@@ -10,6 +10,11 @@ public class Custmain {
   private String deleteflag;
   private java.sql.Date lastmodifytime;
   private String custidentify;
+  private java.sql.Date createtime;
+  private String ownerarea;
+  private String custid;
+  private String branchid;
+  private String ownerareatext;
 
 
   public String getCustno() {
@@ -72,6 +77,51 @@ public class Custmain {
 
   public void setCustidentify(String custidentify) {
     this.custidentify = custidentify;
+  }
+
+
+  public java.sql.Date getCreatetime() {
+    return createtime;
+  }
+
+  public void setCreatetime(java.sql.Date createtime) {
+    this.createtime = createtime;
+  }
+
+
+  public String getOwnerarea() {
+    return ownerarea;
+  }
+
+  public void setOwnerarea(String ownerarea) {
+    this.ownerarea = ownerarea;
+  }
+
+
+  public String getCustid() {
+    return custid;
+  }
+
+  public void setCustid(String custid) {
+    this.custid = custid;
+  }
+
+
+  public String getBranchid() {
+    return branchid;
+  }
+
+  public void setBranchid(String branchid) {
+    this.branchid = branchid;
+  }
+
+
+  public String getOwnerareatext() {
+    return ownerareatext;
+  }
+
+  public void setOwnerareatext(String ownerareatext) {
+    this.ownerareatext = ownerareatext;
   }
 
 }

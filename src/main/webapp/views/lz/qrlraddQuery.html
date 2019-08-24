@@ -1,0 +1,333 @@
+<script src="js/jquery-1.8.3.min.js"></script>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <span>补充政策查询</span>
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width: 75px">开始日期</label>
+                            <div class="layui-input-inline">
+                                <span><input type="text" name="begindate" id="begindateid" readonly value="2019-01-01"
+                                             lay-verify="required" autocomplete="off" class="layui-input"></span>
+                            </div>
+
+                            <label class="layui-form-label" style="width: 75px">结束日期</label>
+                            <div class="layui-input-inline">
+                                <span><input type="text" name="enddate" id="enddateid" readonly autocomplete="off"
+                                             lay-verify="required" class="layui-input"></span>
+                            </div>
+
+                            <label class="layui-form-label">单据编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="str" id="strid" autocomplete="off" class="layui-input">
+                            </div>
+                            <div style="display: none">
+                            <label class="layui-form-label">供应商名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="supname" id="supnameid" autocomplete="off" class="layui-input">
+                            </div>
+                            <label class="layui-form-label">客户名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="custname" id="custnameid" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                            </div>
+                            <br>
+                            <br>
+                            <label class="layui-form-label">商品名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="prodname" id="prodnameid" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                            <label class="layui-form-label">商品编码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="prodno" id="prodnoid" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+
+                            <label class="layui-form-label">采购员</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="purchaser" id="purchaserid" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                            <label class="layui-form-label">录入单号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="billid" id="billidid" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <button class="layui-btn" id="serchid">搜索</button>
+                            </div>
+                        </div>
+                        <table id="demo_hash" lay-filter="test"></table>
+                        <script type="text/html" id="barDemo_hash">
+                            {{#  if(d.statu==1){  }}
+                            {{# }else{ }}
+                            <!--<a class="layui-btn layui-btn-xs" lay-event="detail">编辑</a>-->
+                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                            {{# } }}
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="statas" value="0">
+
+<script>
+    layui.config({
+        version: '15227092974901' //为了更新 js 缓存，可忽略
+    });
+    layui.config({
+        base: '/src/js/'
+    }).use(['jquery', 'table',  'laydate'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            table = layui.table,
+        laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#begindateid'
+        });
+        laydate.render({
+            elem: '#enddateid'
+        });
+
+        //第一个实例123
+        table.render({
+            method: 'post',
+            // size: 'sm',
+             limit: 10,
+            elem: '#demo_hash',
+            height: 'full-290',
+            toolbar: '#toolbarDemo',
+            url: 'getQrlradd', //数据接口
+            text: {
+                none: '暂无相关数据'
+            },
+            page: true, //开启分页
+            cols: [
+                [ //表头
+                {
+                    field: 'zizeng',
+                    title: '序号',
+                    width: 60,
+                    fixe: 'left',
+                    type: 'numbers'
+                },{
+                    field: 'createtime',
+                    title: '单据日期',
+                    width: 120,
+                    sort: true
+                },{
+                    field: 'statu',
+                    title: '审核状态',
+                    id: '#titleTpl',
+                    sort: true,
+                    width: 95,
+                    templet: function (d) {
+                        if (d.statu == 0) {
+                            return '未审核';
+                        }
+                        if (d.statu == 1) {
+
+                            return '已补充';
+                        }
+                        if (d.statu == 8) {
+                            return '驳回';
+                        }
+                    }
+                },{
+                    field: 'pk',
+                    title: '单据编号',
+                    width: 200,
+                    sort: true
+                },{
+                    field: 'begindate',
+                    title: '政策开始日期',
+                    width: 200
+                }, {
+                    field: 'enddate',
+                    title: '政策结束日期',
+                    width: 200
+                },{
+                    field: 'ssje',
+                    title: '实收金额',
+                    width: 120
+                }, {
+                    field: 'supno',
+                    title: '供应商编码',
+                    width: 220
+                }, {
+                    field: 'supname',
+                    title: '供应商名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodno',
+                    title: '商品编码',
+                    width: 220
+                }, {
+                    field: 'prodname',
+                    title: '商品名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodspecification',
+                    title: '规格',
+                    width: 220
+                }, {
+                    field: 'packageunit',
+                    title: '包装单位',
+                    width: 220
+                }, {
+                    field: 'purchaser',
+                    title: '采购员',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'custno',
+                    title: '客户编码',
+                    width: 220
+                }, {
+                    field: 'custname',
+                    title: '客户名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'ownerareatext',
+                    title: '所属大区',
+                    width: 220
+                }, {
+                    field: 'custtypename',
+                    title: '客户类型',
+                    width: 220
+                }, {
+                    field: 'price',
+                    title: '销售价',
+                    width: 220
+                }, {
+                    field: 'getprice',
+                    title: '购进价',
+                    width: 220
+                }, {
+                    field: 'flmark',
+                    title: '返利政策',
+                    width: 220
+                }, {
+                    field: 'fltype',
+                    title: '政策类型',
+                    width: 220
+                }, {
+                    field: 'flprice',
+                    title: '返利单价',
+                    width: 220
+                }, {
+                    field: 'dftime',
+                    title: '兑付时间',
+                    width: 220
+                }, {
+                    field: 'dftype',
+                    title: '兑付方式',
+                    width: 220
+                }, {
+                    field: 'contactsman',
+                    title: '供应商联系人',
+                    width: 220
+                }, {
+                    field: 'note',
+                    title: '备注',
+                    width: 220
+                }, {
+                    field: 'note2',
+                    title: '实收备注',
+                    width: 220
+                },{
+                    field: 'staff',
+                    title: '制单人',
+                    width: 220
+                }, {
+                    field: 'billid',
+                    title: '确认录入单号',
+                    width: 220
+                }, {
+                    width: 70,
+                    fixed: 'right',
+                    title: '操作',
+                    align: 'center',
+                    toolbar: '#barDemo_hash'
+                }
+                ]
+            ]
+        });
+
+
+        //监听单元格编辑
+        table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if (layEvent === 'detail') { //查看
+
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('真的删除么?', function (index) {
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    $.post('delQrlradd', {pk: data.pk}, function (res) {
+                        layer.msg(res.success ? '网络错误！' : res.msg);
+                    }, 'json');
+                });
+            }
+        });
+
+        //搜索
+        function getTable(){
+            var pk = $("#strid").val().trim().toUpperCase();
+            var begindate = $("#begindateid").val().trim();
+            var enddate = $("#enddateid").val().trim();
+            var prodname = $("#prodnameid").val().trim();
+            var prodno = $("#prodnoid").val().trim().toUpperCase();
+            var purchaser = $("#purchaserid").val().trim();
+            var billid = $("#billidid").val().trim().toUpperCase();
+            table.reload('demo_hash', {
+                url: 'getQrlradd'
+                ,where: {
+                    pk:pk,
+                    begindate:begindate,
+                    enddate:enddate,
+                    prodname:prodname,
+                    prodno:prodno,
+                    purchaser:purchaser,
+                    billid:billid
+                }
+            });
+        }
+
+
+        //鼠标点击搜索
+        $("#serchid").click(function () {
+            getTable();
+        });
+
+        //回车搜索
+        document.onkeydown = function (e) {
+            e = e ? e : event;// 兼容FF
+            if (e.keyCode == 13) {
+                getTable();
+                return false;//防止页面跳转刷新掉
+            }else if(e.keyCode == 27) {
+                layer.closeAll('iframe');
+                return false;//防止页面跳转刷新掉
+            }
+        };
+    });
+
+    var date = new Date();
+    $("#enddateid").val(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate());
+</script>

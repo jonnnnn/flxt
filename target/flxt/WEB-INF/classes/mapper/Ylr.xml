@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzt.dao.YlrDao">
+    <resultMap id="BaseResultMap" type="com.jzt.entity.Ylr">
+        <id column="billid" jdbcType="VARCHAR" property="billid" />
+        <result column="statu" jdbcType="VARCHAR" property="statu" />
+        <result column="begindate" jdbcType="DATE" property="begindate" />
+        <result column="enddate" jdbcType="DATE" property="enddate" />
+        <result column="supno" jdbcType="VARCHAR" property="supno" />
+        <result column="supname" jdbcType="VARCHAR" property="supname" />
+        <result column="prodno" jdbcType="VARCHAR" property="prodno" />
+        <result column="prodname" jdbcType="VARCHAR" property="prodname" />
+        <result column="prodspecification" jdbcType="VARCHAR" property="prodspecification" />
+        <result column="packageunit" jdbcType="VARCHAR" property="packageunit" />
+        <result column="custno" jdbcType="VARCHAR" property="custno" />
+        <result column="custname" jdbcType="VARCHAR" property="custname" />
+        <result column="price" jdbcType="VARCHAR" property="price" />
+        <result column="getprice" jdbcType="VARCHAR" property="getprice" />
+        <result column="flmark" jdbcType="VARCHAR" property="flmark" />
+        <result column="fltype" jdbcType="VARCHAR" property="fltype" />
+        <result column="flprice" jdbcType="VARCHAR" property="flprice" />
+        <result column="dftime" jdbcType="DATE" property="dftime" />
+        <result column="dftype" jdbcType="VARCHAR" property="dftype" />
+        <result column="contactsman" jdbcType="VARCHAR" property="contactsman" />
+        <result column="contactsphone" jdbcType="VARCHAR" property="contactsphone" />
+        <result column="note" jdbcType="VARCHAR" property="note" />
+        <result column="allcount" jdbcType="INTEGER" property="allcount" />
+    </resultMap>
+
+    <insert id="inserYlr" parameterType="Ylr">
+        insert INTO ylr(note,billid,begindate,enddate,supno,supname,prodno,
+                        prodname,prodspecification,packageunit,custno,
+                        custname,price,getprice,flmark,fltype,flprice,
+                        dftime,dftype,contactsman,contactsphone,staff,purchaser,ownerareatext,custtype)
+        values(#{note},#{billid},#{begindate},#{enddate},#{supno},#{supname},#{prodno},
+               #{prodname},#{prodspecification},#{packageunit},#{custno},
+               #{custname},#{price},#{getprice},#{flmark},#{fltype},#{flprice},
+               #{dftime},#{dftype},#{contactsman},#{contactsphone},#{staff},#{purchaser},#{ownerareatext},#{custtype})
+    </insert>
+    
+    <update id="updYlr" parameterType="Ylr">
+        update ylr set
+                   lastmodifytime = sysdate,
+                   note = #{note},
+                   begindate =#{begindate},
+                   enddate=#{enddate},
+                   supno=#{supno},
+                   supname=#{supname},
+                   prodno=#{prodno},
+                   prodname=#{prodname},
+                   prodspecification=#{prodspecification},
+                   packageunit=#{packageunit},
+                   purchaser=#{purchaser},
+                   custno=#{custno},
+                    custname=#{custname},
+                    price=#{price},
+                    getprice=#{getprice},
+                    flmark=#{flmark},
+                    fltype=#{fltype},
+                    flprice=#{flprice},
+                    dftime=#{dftime},
+                    dftype=#{dftype},
+                    contactsman=#{contactsman},
+                    contactsphone=#{contactsphone},
+                   ownerareatext=#{ownerareatext},
+                   custtype=#{custtype},
+                   statu = 0
+        where billid =#{billid}
+    </update>
+
+    <delete id="delYlr" parameterType="Ylr">
+        update ylr set lastmodifytime = sysdate,deleteflag = 1 where billid = #{billid}
+    </delete>
+
+    <update id="updState" parameterType="Ylr" >
+        update ylr set lastmodifytime = sysdate,statu = #{statu} where billid = #{billid}
+    </update>
+
+    <select id="getYlrCount" resultMap="BaseResultMap" parameterType="Ylr">
+        select *
+        from (select t.*, rownum rn
+        from (
+        select count(*) over() allcount,
+        createtime,
+        lastmodifytime,
+        deleteflag,
+        note,
+        billid,
+        statu,
+        begindate,
+        enddate,
+        supno,
+        supname,
+        prodno,
+        prodname,
+        prodspecification,
+        packageunit,
+        custno,
+        custname,
+        price,
+        getprice,
+        flmark,
+        fltype,
+        flprice,
+        dftime,
+        dftype,
+        contactsman,
+        contactsphone,
+        note2,
+        staff,
+        purchaser,
+        branchid,
+        ownerareatext,
+        custtype,
+        (select custtypename from custtypemain b where a.CUSTTYPE = b.CUSTTYPEID ) custtypename
+        from ylr a where DELETEFLAG = 0
+        <if test="billid!=null">
+            and a.billid like '%${billid}%'
+        </if>
+        <if test="begindate!=null">
+            <if test="enddate!=null">
+                and  a.createtime between  to_date('${begindate}','yyyy-mm-dd') and to_date('${enddate}','yyyy-mm-dd')+1
+            </if>
+        </if>
+        <if test="prodname!=null">
+            and a.prodname like '%${prodname}%'
+        </if>
+        <if test="prodno!=null">
+            and a.prodno like '%${prodno}%'
+        </if>
+        <if test="custno!=null">
+            and a.custno like '%${custno}%'
+        </if>
+        <if test="custtypename!=null">
+            and a.custtypename like '%${custtypename}%'
+        </if>
+        <if test="supno!=null">
+            and a.supno like '%${supno}%'
+        </if>
+        <if test="price!=null">
+            and a.price like '%${price}%'
+        </if>
+        <if test="getprice!=null">
+            and a.getprice like '%${getprice}%'
+        </if>
+        <if test="fltype!=null">
+            and a.fltype like '%${fltype}%'
+        </if>
+        <if test="flprice!=null">
+            and a.flprice like '%${flprice}%'
+        </if>
+        <if test="dftime!=null">
+            and a.dftime like '%${dftime}%'
+        </if>
+        <if test="dftype!=null">
+            and a.dftype like '%${dftype}%'
+        </if>
+        <if test="purchaser!=null">
+            and a.purchaser like '%${purchaser}%'
+        </if>
+        <if test="statu!=null">
+            and  statu like '%${statu}%'
+        </if>
+        order by a.billid desc) t
+        where rownum <![CDATA[ <= ]]> #{page} * #{limit})
+        where rn <![CDATA[ > ]]> (#{page}-1) * #{limit}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,260 @@
+<link rel="stylesheet" href="../../css/layui.css" id="layui">
+<script src="../../templz/layui.all.js"></script>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单据编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="str" id="strid"   autocomplete="off" class="layui-input"  >
+                            </div>
+                            <div class="layui-input-inline">
+                                <button class="layui-btn" id="serchid">搜索</button>
+                            </div>
+                        </div>
+                        <table id="demo_hash" lay-filter="test"></table>
+                        <script type="text/html" id="barDemo_hash">
+                            <a class="layui-btn layui-btn-xs" lay-event="xz">选择</a>
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="statas">
+<script>
+    layui.config({
+        base: '/src/js/'
+    }).use(['jquery', 'table'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            table = layui.table;
+
+        //第一个实例123
+        table.render({
+            method: 'post',
+            // size: 'sm',
+             limit: 10,
+            elem: '#demo_hash',
+            height: 'full-235',
+            url: '../../getYlr', //数据接口
+            where:{statu : 1},
+            text: {
+                none: '暂无相关数据'
+            },
+            page: true, //开启分页
+            cols: [
+                [ //表头
+                {
+                    field: 'zizeng',
+                    title: '序号',
+                    width: 60,
+                    fixe: 'left',
+                    type: 'numbers'
+                },{
+                    field: 'createtime',
+                    title: '单据日期',
+                    width: 120,
+                    sort: true
+                },{
+                    field: 'billid',
+                    title: '单据编号',
+                    width: 200
+                },{
+                    field: 'begindate',
+                    title: '政策开始日期',
+                    width: 200,
+                    sort: true
+                }, {
+                    field: 'enddate',
+                    title: '政策结束日期',
+                    width: 200
+                }, {
+                    field: 'supno',
+                    title: '供应商编码',
+                    width: 220
+                }, {
+                    field: 'supname',
+                    title: '供应商名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodno',
+                    title: '商品编码',
+                    width: 220
+                }, {
+                    field: 'prodname',
+                    title: '商品名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'prodspecification',
+                    title: '规格',
+                    width: 220
+                }, {
+                    field: 'packageunit',
+                    title: '包装单位',
+                    width: 220
+                }, {
+                    field: 'purchaser',
+                    title: '采购员',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'custno',
+                    title: '客户编码',
+                    width: 220
+                }, {
+                    field: 'custname',
+                    title: '客户名称',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'ownerareatext',
+                    title: '所属大区',
+                    width: 220
+                },{
+                    field: 'custtypename',
+                    title: '客户类型',
+                    width: 220,
+                    sort: true
+                }, {
+                    field: 'price',
+                    title: '销售价',
+                    width: 220
+                }, {
+                    field: 'getprice',
+                    title: '购进价',
+                    width: 220
+                }, {
+                    field: 'flmark',
+                    title: '返利政策',
+                    width: 220
+                }, {
+                    field: 'fltype',
+                    title: '政策类型',
+                    width: 220
+                }, {
+                    field: 'flprice',
+                    title: '返利单价',
+                    width: 220
+                }, {
+                    field: 'dftime',
+                    title: '兑付时间',
+                    width: 220
+                }, {
+                    field: 'dftype',
+                    title: '兑付方式',
+                    width: 220
+                }, {
+                    field: 'contactsman',
+                    title: '供应商联系人',
+                    width: 220
+                }, {
+                    field: 'contactsphone',
+                    title: '供应商联系人电话',
+                    width: 220
+                }, {
+                    field: 'ssje',
+                    title: '实收金额',
+                    width: 220
+                }, {
+                    field: 'note',
+                    title: '备注',
+                    width: 220
+                },{
+                    fixed: 'right',
+                    width: 120,
+                    title: '操作',
+                    align: 'center',
+                    toolbar: '#barDemo_hash'
+                }
+                ]
+            ]
+        });
+
+        //监听单元格编辑
+        table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if (layEvent === 'detail') { //查看
+                //do somehing
+                layer.open({
+                    type: 2,
+                    title: '表单',
+                    shadeClose: true,
+                    shade: 0.8,
+                    /*  btn:['提交','关闭'],*/
+                    area: ['60%', '90%'],//宽 高
+                    content: 'selectYxsLook.html',
+                    success:function (layero,index ) {
+                        var iframe = window['layui-layer-iframe'+index];
+                        iframe.child(data.billid);
+                    }});
+
+            } else if (layEvent === 'xz') {
+                var index = parent.layer.getFrameIndex(window.name);
+                var  datas = [
+                    data.billid,
+                    data.begindate,
+                    data.enddate,
+                    data.supno,
+                    data.supname,
+                    data.prodno,
+                    data.prodname,
+                    data.prodspecification,
+                    data.packageunit,
+                    data.purchaser,
+                    data.custno,
+                    data.custname,
+                    data.ownerareatext,
+                    data.custtypename,
+                    data.price,
+                    data.getprice,
+                    data.flprice,//16
+                    data.dftime,
+                    data.fltype,
+                    data.dftype,
+                    data.contactsman,
+                    data.contactsphone,
+                    data.note,
+                    data.flmark
+                ];
+                parent.getylr(datas);
+                parent.layer.close(index);
+            }
+        });
+
+
+        function getData(){
+            var a =  $("#strid").val().trim().toUpperCase();
+            table.reload('demo_hash', {
+                url: '../../getYlr'
+                ,where: {billid : a,statu : 1 }
+            });
+        }
+
+        $("#serchid").click(function () {
+            getData();
+        });
+        document.onkeydown = function (e) {
+            e = e ? e : event;// 兼容FF
+            if (e.keyCode == 13) {
+                getData()
+                return false;//防止页面跳转刷新掉
+            }else if(e.keyCode == 27) {
+                layer.closeAll('iframe');
+                return false;//防止页面跳转刷新掉
+            }
+        };
+    });
+
+    function getStates(obj) {
+        $("#statas").val(obj);
+    }
+</script>
